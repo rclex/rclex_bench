@@ -9,3 +9,6 @@ erl_crash.dump
 *.beam
 /config/*.secret.exs
 .elixir_ls/
+
+# because dependencies may be vary according to the version of Rclex
+mix.lock

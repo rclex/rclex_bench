@@ -12,10 +12,10 @@ defmodule RclexBench.ResultsServer do
     {:noreply, {results, count + 1}}
   end
 
-  def handle_cast({:write, filepath}, {results, count}) do
+  def handle_call({:write, filepath}, _from, {results, count}) do
     # IO.inspect(results)
     File.write(filepath, results, [:append])
-    {:noreply, {results, count}}
+    {:reply, nil, {results, count}}
   end
 
   def start_link(name, {results, count}) do
@@ -27,7 +27,7 @@ defmodule RclexBench.ResultsServer do
   end
 
   def write(name, filepath) do
-    GenServer.cast(name, {:write, filepath})
+    GenServer.call(name, {:write, filepath})
   end
 
   def stop(name) do

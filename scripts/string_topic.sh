@@ -38,12 +38,16 @@ while [ ${CUR_STR_LENGTH} -le ${MAX_STR_LENGTH} ]; do
   
   CMD="mix run -e 'RclexBench.StringTopic.sub_main(\"${FILE_SUB}\", ${NUM_SUB})'"
   eval ${CMD} &
+  PID_SUB=$!
 
   # Wait a while.
   sleep ${SUB_PUB_INTERVAL}
 
   CMD="mix run -e 'RclexBench.StringTopic.pub_main(\"${FILE_PUB}\", ${NUM_PUB}, ${CUR_STR_LENGTH}, ${NUM_COMM})'"
-  eval ${CMD}
+  eval ${CMD} &
+  PID_PUB=$!
+
+  wait $PID_SUB $PID_PUB
 
   CUR_STR_LENGTH=$((${CUR_STR_LENGTH} * 2))
 done

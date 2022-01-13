@@ -8,4 +8,6 @@ services:
       - ../rclex:/root/rclex
       - .:/root/rclex_bench/
     working_dir: /root/rclex_bench
+    environment:
+      - ERL_AFLAGS=-kernel shell_history enabled
     tty: true

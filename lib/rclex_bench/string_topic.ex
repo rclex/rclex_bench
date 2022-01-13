@@ -17,7 +17,7 @@ defmodule RclexBench.StringTopic do
     # Generate file for measurement logs.
     File.write(filepath, "#{filepath}\r\n")
     # Start ResultsServer for publisher.
-    RclexBench.ResultsServer.start_link(:pub_server, {"", 1})
+    RclexBench.ResultsServer.start_link(:pub_server, "")
 
     # Create nodes and register them as publishers.
     context = Rclex.rclexinit()
@@ -85,7 +85,7 @@ defmodule RclexBench.StringTopic do
     # Generate file for measurement logs.
     File.write(filepath, "#{filepath}\r\n")
     # Start ResultsServer for subscriber.
-    RclexBench.ResultsServer.start_link(:sub_server, {"", 1})
+    RclexBench.ResultsServer.start_link(:sub_server, "")
 
     # Create nodes and register them as subscribers.
     context = Rclex.rclexinit()

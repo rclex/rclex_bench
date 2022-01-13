@@ -1,25 +1,24 @@
 defmodule RclexBench.ResultsServer do
   use GenServer
 
-  def init({results, count}) do
-    {:ok, {results, count}}
+  def start_link(name, results) do
+    GenServer.start_link(__MODULE__, results, name: name)
   end
 
-  def handle_cast({:store, time}, {results, count}) do
-    result = "#{count},#{time}\r\n"
+  def init(results) do
+    {:ok, results}
+  end
+
+  def handle_cast({:store, time}, results) do
+    result = "#{time}\r\n"
     # IO.inspect(result)
-    results = results <> result
-    {:noreply, {results, count + 1}}
+    {:noreply, results <> result}
   end
 
-  def handle_call({:write, filepath}, _from, {results, count}) do
+  def handle_call({:write, filepath}, _from, results) do
     # IO.inspect(results)
     File.write(filepath, results, [:append])
-    {:reply, nil, {results, count}}
-  end
-
-  def start_link(name, {results, count}) do
-    GenServer.start_link(__MODULE__, {results, count}, name: name)
+    {:reply, nil, results}
   end
 
   def store(name, time) do

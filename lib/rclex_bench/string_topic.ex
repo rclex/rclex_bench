@@ -11,7 +11,7 @@ defmodule RclexBench.StringTopic do
   @doc """
     The benchmark which makes any number of publishers.
   """
-  def pub_main(filepath, str_length, num_node) do
+  def pub_main(filepath, num_node, str_length) do
     Logger.configure(level: :info)
 
     context = Rclex.rclexinit()

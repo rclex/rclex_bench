@@ -89,3 +89,34 @@ while [ ${CUR_STR_LENGTH} -le ${MAX_STR_LENGTH} ]; do
   done
   CUR_STR_LENGTH=$((${CUR_STR_LENGTH} * 2))
 done
+
+
+# Pub1 : SubN test.
+CUR_STR_LENGTH=${INI_STR_LENGTH}
+
+while [ ${CUR_STR_LENGTH} -le ${MAX_STR_LENGTH} ]; do
+  NUM_PUB=1
+  NUM_SUB=${INI_NUM_NODES}
+  while [ ${NUM_SUB} -le ${MAX_NUM_NODES} ]; do
+  FILEPATH="./results/p1sN/${VERSION}/${CUR_STR_LENGTH}/${NUM_SUB}"
+  FILE_PUB="${FILEPATH}/pub.txt"
+  FILE_SUB="${FILEPATH}/sub.txt"
+  mkdir -p ${FILEPATH}
+  
+  CMD="mix run -e 'RclexBench.StringTopic.sub_main(\"${FILE_SUB}\", ${NUM_SUB})'"
+  eval ${CMD} &
+  PID_SUB=$!
+
+  # Wait a while.
+  sleep ${SUB_PUB_INTERVAL}
+
+  CMD="mix run -e 'RclexBench.StringTopic.pub_main(\"${FILE_PUB}\", ${NUM_PUB}, ${CUR_STR_LENGTH}, ${NUM_COMM})'"
+  eval ${CMD} &
+  PID_PUB=$!
+
+  wait $PID_SUB $PID_PUB
+
+  NUM_SUB=$((${NUM_SUB} + 20))
+  done
+  CUR_STR_LENGTH=$((${CUR_STR_LENGTH} * 2))
+done

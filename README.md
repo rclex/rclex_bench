@@ -20,9 +20,10 @@
 
 - `./results/p1s1/<version_name>`: pub1-sub1 communication
   - `(cont.)/<length>`: The length of string, a.k.a the size of message
+- `./results/p1sN/<version_name>`: pub1-subN communication
+  - `(cont.)/<length>/<node>`: The number of nodes
 - `./results/pNs1/<version_name>`: pubN-sub1 communication
-  - `(cont.)/<length>`: The length of string, a.k.a the size of message
-  - `(cont.)/<node>`: The number of nodes
+  - `(cont.)/<length>/<node>`: The number of nodes
 
 ## Configuration point
 
@@ -32,6 +33,7 @@
   defmacro eval_interval, do: 100
   defmacro eval_pub_period, do: 1_000
   defmacro eval_sub_period, do: 5_000
+  defmacro logger_level, do: :warn
 ```
 
 ./scripts/string_topic.sh

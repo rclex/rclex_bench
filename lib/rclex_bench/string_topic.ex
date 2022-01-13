@@ -1,11 +1,15 @@
 defmodule RclexBench.StringTopic do
+  @moduledoc """
+    The benchmark for String type.
+  """
   require RclexBench
   @eval_loop_num RclexBench.eval_loop_num()
   @eval_interval RclexBench.eval_interval()
-  @eval_period RclexBench.eval_period()
+  @eval_pub_period RclexBench.eval_pub_period()
+  @eval_sub_period RclexBench.eval_sub_period()
 
-  @moduledoc """
-    The sample which makes any number of publishers.
+  @doc """
+    The benchmark which makes any number of publishers.
   """
   def pub_main(filepath, str_length, num_node) do
     Logger.configure(level: :info)
@@ -30,17 +34,19 @@ defmodule RclexBench.StringTopic do
         @eval_loop_num
       )
 
-    Process.sleep(@eval_period)
+    Process.sleep(@eval_pub_period)
+
     Rclex.Executor.stop_timer(timer)
     Rclex.Node.finish_jobs(publishers)
     Rclex.Executor.finish_nodes(nodes)
     Rclex.shutdown(context)
 
+    # Write results to the file.
     send(output, {:ok})
   end
 
   @doc """
-    Timer event callback function defined by user.
+    Timer event callback function for publication.
   """
   def pub_callback(args) do
     [publishers, message, output] = args
@@ -57,6 +63,53 @@ defmodule RclexBench.StringTopic do
     time = "#{System.system_time(:microsecond)}"
     Rclex.Publisher.publish(publishers, msg_list)
 
+    # For debugging to publishing message.
+    # IO.puts("[#{time}] published msg: #{message}")
+
     send(output, {:ok, time})
+  end
+
+  @doc """
+    The benchmark which makes any number of subscribers.
+  """
+  def sub_main(filepath, num_node) do
+    Logger.configure(level: :info)
+
+    context = Rclex.rclexinit()
+    {:ok, nodes} = Rclex.Executor.create_nodes(context, 'sub_node', num_node)
+    {:ok, subscribers} = Rclex.Node.create_subscribers(nodes, 'testtopic', :single)
+
+    # Generate file and process for output of measurement logs
+    File.write(filepath, "#{filepath}\r\n")
+    RclexBench.Results.start_link(:sub_server, {"", 1})
+
+    # Register callback and start subscription
+    Rclex.Subscriber.start_subscribing(subscribers, context, &sub_callback/1)
+
+    Process.sleep(@eval_sub_period)
+    Rclex.Subscriber.stop_subscribing(subscribers)
+    Rclex.Node.finish_jobs(subscribers)
+    Rclex.Executor.finish_nodes(nodes)
+    Rclex.shutdown(context)
+
+    # Write results to the file.
+    RclexBench.Results.write(:sub_server, filepath)
+    Process.sleep(1000)
+    RclexBench.Results.stop(:sub_server)
+  end
+
+  @doc """
+    Callback function for subscribers.
+  """
+  def sub_callback(msg) do
+    # Measure system time just after subscribing.
+    time = "#{System.system_time(:microsecond)}"
+    RclexBench.Results.store(:sub_server, time)
+
+    # For debugging to subscribing message.
+    # received_msg = Rclex.readdata_string(msg)
+    # IO.puts("[#{time}] subscribed msg: #{received_msg}")
+
+    msg
   end
 end

@@ -6,8 +6,7 @@ defmodule RclexBench.StringTopic do
   @eval_interval RclexBench.eval_interval()
   @eval_pub_period RclexBench.eval_pub_period()
   @eval_sub_period RclexBench.eval_sub_period()
-
-  @logger_level :warn
+  @logger_level RclexBench.logger_level()
 
   @doc """
     The benchmark which makes any number of publishers.

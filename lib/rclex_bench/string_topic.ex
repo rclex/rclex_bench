@@ -14,42 +14,48 @@ defmodule RclexBench.StringTopic do
   def pub_main(filepath, num_node, str_length) do
     Logger.configure(level: :info)
 
+    # Generate file for measurement logs.
+    File.write(filepath, "#{filepath}\r\n")
+    # Start ResultsServer for publisher.
+    RclexBench.ResultsServer.start_link(:pub_server, {"", 1})
+
+    # Create nodes and register them as publishers.
     context = Rclex.rclexinit()
     {:ok, nodes} = Rclex.Executor.create_nodes(context, 'pub_node', num_node)
     {:ok, publishers} = Rclex.Node.create_publishers(nodes, 'testtopic', :single)
 
-    # Generate file and process for output of measurement logs
-    File.write(filepath, "#{filepath}\r\n")
-    output = spawn(RclexBench, :output, [filepath, "", 1])
-
-    # Prepare string message to publish
+    # Prepare string message to publish.
     message = String.duplicate("a", str_length)
 
-    # Create and start Rclex Timer for publication
+    # Create and start Rclex Timer for publication.
     {:ok, timer} =
       Rclex.Executor.create_timer(
         &pub_callback/1,
-        [publishers, message, output],
+        [publishers, message],
         @eval_interval,
         @eval_loop_num
       )
 
+    # Wait a while to finish publication.
     Process.sleep(@eval_pub_period)
 
+    # Finalize Rclex environments.
     Rclex.Executor.stop_timer(timer)
     Rclex.Node.finish_jobs(publishers)
     Rclex.Executor.finish_nodes(nodes)
     Rclex.shutdown(context)
 
     # Write results to the file.
-    send(output, {:ok})
+    RclexBench.ResultsServer.write(:pub_server, filepath)
+    Process.sleep(1000)
+    RclexBench.ResultsServer.stop(:pub_server)
   end
 
   @doc """
     Timer event callback function for publication.
   """
   def pub_callback(args) do
-    [publishers, message, output] = args
+    [publishers, message] = args
 
     # Prepare messages according to the number of publishers.
     n = length(publishers)
@@ -59,14 +65,15 @@ defmodule RclexBench.StringTopic do
       Rclex.setdata(Enum.at(msg_list, index), message, :string)
     end)
 
-    # Publish topics after measuring system time
+    # Publish topics after measuring system time.
     time = "#{System.system_time(:microsecond)}"
     Rclex.Publisher.publish(publishers, msg_list)
 
-    # For debugging to publishing message.
+    ## For debugging to publishing message.
     # IO.puts("[#{time}] published msg: #{message}")
 
-    send(output, {:ok, time})
+    # Store time to ResultsServer.
+    RclexBench.ResultsServer.store(:pub_server, time)
   end
 
   @doc """
@@ -75,18 +82,23 @@ defmodule RclexBench.StringTopic do
   def sub_main(filepath, num_node) do
     Logger.configure(level: :info)
 
+    # Generate file for measurement logs.
+    File.write(filepath, "#{filepath}\r\n")
+    # Start ResultsServer for subscriber.
+    RclexBench.ResultsServer.start_link(:sub_server, {"", 1})
+
+    # Create nodes and register them as subscribers.
     context = Rclex.rclexinit()
     {:ok, nodes} = Rclex.Executor.create_nodes(context, 'sub_node', num_node)
     {:ok, subscribers} = Rclex.Node.create_subscribers(nodes, 'testtopic', :single)
 
-    # Generate file and process for output of measurement logs
-    File.write(filepath, "#{filepath}\r\n")
-    RclexBench.ResultsServer.start_link(:sub_server, {"", 1})
-
-    # Register callback and start subscription
+    # Register callback and start subscription.
     Rclex.Subscriber.start_subscribing(subscribers, context, &sub_callback/1)
 
+    # Wait a while to finish publication.
     Process.sleep(@eval_sub_period)
+
+    # Finalize Rclex environments.
     Rclex.Subscriber.stop_subscribing(subscribers)
     Rclex.Node.finish_jobs(subscribers)
     Rclex.Executor.finish_nodes(nodes)
@@ -106,7 +118,7 @@ defmodule RclexBench.StringTopic do
     time = "#{System.system_time(:microsecond)}"
     RclexBench.ResultsServer.store(:sub_server, time)
 
-    # For debugging to subscribing message.
+    ## For debugging to subscribing message.
     # received_msg = Rclex.readdata_string(msg)
     # IO.puts("[#{time}] subscribed msg: #{received_msg}")
 

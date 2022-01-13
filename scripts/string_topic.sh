@@ -1,6 +1,8 @@
 #!/bin/bash
 
 ### Configuration part.
+# The number of communication (publication) for each measurement.
+NUM_COMM=5
 # Time to sleep after running sub_main before running pub_main.
 SUB_PUB_INTERVAL=0.1
 # Maximum length of string a.k.a size of message.
@@ -29,18 +31,18 @@ NUM_SUB=1
 NUM_PUB=1
 
 while [ ${CUR_STR_LENGTH} -le ${MAX_STR_LENGTH} ]; do
-  FILEPATH="./results/p1s1/${VERSION}/${CUR_SIZE}"
-  FILE_PUB="${FILEPATH}/pub.txt"
+  FILEPATH="./results/p1s1/${VERSION}/${CUR_STR_LENGTH}"
   FILE_SUB="${FILEPATH}/sub.txt"
+  FILE_PUB="${FILEPATH}/pub.txt"
   mkdir -p ${FILEPATH}
   
-  CMD="mix run -e 'RclexBench.StringTopic.sub_main(\"${FILE_PUB}\", ${NUM_SUB})'"
+  CMD="mix run -e 'RclexBench.StringTopic.sub_main(\"${FILE_SUB}\", ${NUM_SUB})'"
   eval ${CMD} &
 
   # Wait a while.
   sleep ${SUB_PUB_INTERVAL}
 
-  CMD="mix run -e 'RclexBench.StringTopic.pub_main(\"${FILE_SUB}\", ${NUM_PUB}, ${CUR_SIZE})'"
+  CMD="mix run -e 'RclexBench.StringTopic.pub_main(\"${FILE_PUB}\", ${NUM_PUB}, ${CUR_STR_LENGTH}, ${NUM_COMM})'"
   eval ${CMD}
 
   CUR_STR_LENGTH=$((${CUR_STR_LENGTH} * 2))

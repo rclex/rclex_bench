@@ -3,7 +3,6 @@ defmodule RclexBench.StringTopic do
     The benchmark for String type.
   """
   require RclexBench
-  @eval_loop_num RclexBench.eval_loop_num()
   @eval_interval RclexBench.eval_interval()
   @eval_pub_period RclexBench.eval_pub_period()
   @eval_sub_period RclexBench.eval_sub_period()
@@ -11,7 +10,7 @@ defmodule RclexBench.StringTopic do
   @doc """
     The benchmark which makes any number of publishers.
   """
-  def pub_main(filepath, num_node, str_length) do
+  def pub_main(filepath, num_node, str_length, num_comm) do
     Logger.configure(level: :info)
 
     # Generate file for measurement logs.
@@ -33,7 +32,7 @@ defmodule RclexBench.StringTopic do
         &pub_callback/1,
         [publishers, message],
         @eval_interval,
-        @eval_loop_num
+        num_comm
       )
 
     # Wait a while to finish publication.

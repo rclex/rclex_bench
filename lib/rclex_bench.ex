@@ -4,7 +4,6 @@ defmodule RclexBench do
   """
 
   # macro definitions for evaluation
-  defmacro eval_loop_num, do: 5
   defmacro eval_interval, do: 100
   defmacro eval_pub_period, do: 1_000
   defmacro eval_sub_period, do: 5_000

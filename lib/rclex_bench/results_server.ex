@@ -1,4 +1,4 @@
-defmodule RclexBench.Results do
+defmodule RclexBench.ResultsServer do
   use GenServer
 
   def init({results, count}) do

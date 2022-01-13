@@ -81,7 +81,7 @@ defmodule RclexBench.StringTopic do
 
     # Generate file and process for output of measurement logs
     File.write(filepath, "#{filepath}\r\n")
-    RclexBench.Results.start_link(:sub_server, {"", 1})
+    RclexBench.ResultsServer.start_link(:sub_server, {"", 1})
 
     # Register callback and start subscription
     Rclex.Subscriber.start_subscribing(subscribers, context, &sub_callback/1)
@@ -93,9 +93,9 @@ defmodule RclexBench.StringTopic do
     Rclex.shutdown(context)
 
     # Write results to the file.
-    RclexBench.Results.write(:sub_server, filepath)
+    RclexBench.ResultsServer.write(:sub_server, filepath)
     Process.sleep(1000)
-    RclexBench.Results.stop(:sub_server)
+    RclexBench.ResultsServer.stop(:sub_server)
   end
 
   @doc """
@@ -104,7 +104,7 @@ defmodule RclexBench.StringTopic do
   def sub_callback(msg) do
     # Measure system time just after subscribing.
     time = "#{System.system_time(:microsecond)}"
-    RclexBench.Results.store(:sub_server, time)
+    RclexBench.ResultsServer.store(:sub_server, time)
 
     # For debugging to subscribing message.
     # received_msg = Rclex.readdata_string(msg)

@@ -18,11 +18,11 @@
 
 ## Results
 
-- ./results/p1s1/<version_name>: pub1-sub1 communication
-  - (cont.)/<length>: The length of string, a.k.a the size of message
-- ./results/pNs1/<version_name>: pubN-sub1 communication
-  - (cont.)/<length>: The length of string, a.k.a the size of message
-  - (cont.)/<node>: The number of nodes
+- `./results/p1s1/<version_name>`: pub1-sub1 communication
+  - `(cont.)/<length>`: The length of string, a.k.a the size of message
+- `./results/pNs1/<version_name>`: pubN-sub1 communication
+  - `(cont.)/<length>`: The length of string, a.k.a the size of message
+  - `(cont.)/<node>`: The number of nodes
 
 ## Configuration point
 

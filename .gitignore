@@ -27,3 +27,6 @@ test-*.tar
 
 # Ignore info about dependencies because it may be vary according to the version of Rclex
 mix.lock
+
+# Ignore results dir
+/results/

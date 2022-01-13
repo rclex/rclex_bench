@@ -7,11 +7,13 @@ defmodule RclexBench.StringTopic do
   @eval_pub_period RclexBench.eval_pub_period()
   @eval_sub_period RclexBench.eval_sub_period()
 
+  @logger_level :warn
+
   @doc """
     The benchmark which makes any number of publishers.
   """
   def pub_main(filepath, num_node, str_length, num_comm) do
-    Logger.configure(level: :info)
+    Logger.configure(level: @logger_level)
 
     # Generate file for measurement logs.
     File.write(filepath, "#{filepath}:#{System.system_time(:microsecond)}\r\n")
@@ -79,7 +81,7 @@ defmodule RclexBench.StringTopic do
     The benchmark which makes any number of subscribers.
   """
   def sub_main(filepath, num_node) do
-    Logger.configure(level: :info)
+    Logger.configure(level: @logger_level)
 
     # Generate file for measurement logs.
     File.write(filepath, "#{filepath}:#{System.system_time(:microsecond)}\r\n")

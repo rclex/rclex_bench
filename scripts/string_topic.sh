@@ -40,7 +40,7 @@ while [ ${CUR_STR_LENGTH} -le ${MAX_STR_LENGTH} ]; do
   NUM_PUB=1
   NUM_SUB=1
 
-  FILEPATH="./results/p1s1/${VERSION}/${CUR_STR_LENGTH}"
+  FILEPATH="./results/string/p1s1/${VERSION}/${CUR_STR_LENGTH}"
   FILE_PUB="${FILEPATH}/pub.csv"
   FILE_SUB="${FILEPATH}/sub.csv"
   FILE_TIM="${FILEPATH}/time.csv"
@@ -73,7 +73,7 @@ while [ ${CUR_STR_LENGTH} -le ${MAX_STR_LENGTH} ]; do
   NUM_PUB=${INI_NUM_NODES}
   NUM_SUB=1
   while [ ${NUM_PUB} -le ${MAX_NUM_NODES} ]; do
-  FILEPATH="./results/pNs1/${VERSION}/${CUR_STR_LENGTH}/${NUM_PUB}"
+  FILEPATH="./results/string/pNs1/${VERSION}/${CUR_STR_LENGTH}/${NUM_PUB}"
   FILE_PUB="${FILEPATH}/pub.csv"
   FILE_SUB="${FILEPATH}/sub.csv"
   FILE_TIM="${FILEPATH}/time.csv"
@@ -108,7 +108,7 @@ while [ ${CUR_STR_LENGTH} -le ${MAX_STR_LENGTH} ]; do
   NUM_PUB=1
   NUM_SUB=${INI_NUM_NODES}
   while [ ${NUM_SUB} -le ${MAX_NUM_NODES} ]; do
-  FILEPATH="./results/p1sN/${VERSION}/${CUR_STR_LENGTH}/${NUM_SUB}"
+  FILEPATH="./results/string/p1sN/${VERSION}/${CUR_STR_LENGTH}/${NUM_SUB}"
   FILE_PUB="${FILEPATH}/pub.csv"
   FILE_SUB="${FILEPATH}/sub.csv"
   FILE_TIM="${FILEPATH}/time.csv"

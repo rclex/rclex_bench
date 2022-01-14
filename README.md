@@ -19,11 +19,11 @@
 ## Results
 
 - Directory structure
-  - `./results/p1s1/<version_name>`: pub1-sub1 communication
+  - `./results/string/p1s1/<version_name>`: pub1-sub1 communication
     - `(cont.)/<length>`: The length of string, a.k.a the size of message
-  - `./results/p1sN/<version_name>`: pub1-subN communication
+  - `./results/string/p1sN/<version_name>`: pub1-subN communication
     - `(cont.)/<length>/<node>`: The number of nodes
-  - `./results/pNs1/<version_name>`: pubN-sub1 communication
+  - `./results/string/pNs1/<version_name>`: pubN-sub1 communication
     - `(cont.)/<length>/<node>`: The number of nodes
 - Files
   - `pub.csv`, `sub.csv`: 

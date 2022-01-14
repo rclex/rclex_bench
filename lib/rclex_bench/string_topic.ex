@@ -24,14 +24,11 @@ defmodule RclexBench.StringTopic do
     {:ok, nodes} = Rclex.Executor.create_nodes(context, 'pub_node', num_node)
     {:ok, publishers} = Rclex.Node.create_publishers(nodes, 'testtopic', :single)
 
-    # Prepare string message to publish.
-    message = String.duplicate("a", str_length)
-
     # Create and start Rclex Timer for publication.
     {:ok, timer} =
       Rclex.Executor.create_timer(
         &pub_callback/1,
-        [publishers, message],
+        {publishers, str_length},
         @eval_interval,
         num_comm
       )
@@ -55,14 +52,23 @@ defmodule RclexBench.StringTopic do
     Timer event callback function for publication.
   """
   def pub_callback(args) do
-    [publishers, message] = args
+    {publishers, length} = args
+    n = length(publishers)
 
     # Prepare messages according to the number of publishers.
-    n = length(publishers)
+    msgs = []
+
+    messages =
+      Enum.map(0..(n - 1), fn _ ->
+        msg = RclexBench.Utils.random_string(length)
+        msgs = msgs ++ msg
+      end)
+
+    # Convert messages to ROS format
     msg_list = Rclex.initialize_msgs(n, :string)
 
     Enum.map(0..(n - 1), fn index ->
-      Rclex.setdata(Enum.at(msg_list, index), message, :string)
+      Rclex.setdata(Enum.at(msg_list, index), Enum.at(messages, index), :string)
     end)
 
     # Publish topics after measuring system time.
@@ -73,7 +79,9 @@ defmodule RclexBench.StringTopic do
     # IO.puts("[#{time}] published msg: #{message}")
 
     # Store time to ResultsServer.
-    RclexBench.ResultsServer.store(:pub_server, {message, time})
+    Enum.map(0..(n - 1), fn index ->
+      RclexBench.ResultsServer.store(:pub_server, {Enum.at(messages, index), time})
+    end)
   end
 
   @doc """

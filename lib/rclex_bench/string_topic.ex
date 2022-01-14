@@ -56,12 +56,9 @@ defmodule RclexBench.StringTopic do
     n = length(publishers)
 
     # Prepare messages according to the number of publishers.
-    msgs = []
-
     messages =
       Enum.map(0..(n - 1), fn _ ->
-        msg = RclexBench.Utils.random_string(length)
-        msgs = msgs ++ msg
+        RclexBench.Utils.random_string(length)
       end)
 
     # Convert messages to ROS format

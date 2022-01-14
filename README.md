@@ -28,9 +28,7 @@
 - Files
   - `pub.csv`, `sub.csv`: 
     - Raw data for each measurement per line
-    - Format:
-      - First line: `"filepath":"start_time"`
-      - Subsequent: `"pub/sub_message","time"`
+    - Format: `"{published,subscribed}_message","time"`
 
 
 ## Configuration point

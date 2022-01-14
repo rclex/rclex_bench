@@ -15,7 +15,7 @@ defmodule RclexBench.StringTopic do
     Logger.configure(level: @logger_level)
 
     # Generate file for measurement logs.
-    File.write(filepath, "#{filepath}:#{System.system_time(:microsecond)}\r\n")
+    File.write(filepath, "")
     # Start ResultsServer for publisher.
     RclexBench.ResultsServer.start_link(:pub_server, "")
 
@@ -91,7 +91,7 @@ defmodule RclexBench.StringTopic do
     Logger.configure(level: @logger_level)
 
     # Generate file for measurement logs.
-    File.write(filepath, "#{filepath}:#{System.system_time(:microsecond)}\r\n")
+    File.write(filepath, "")
     # Start ResultsServer for subscriber.
     RclexBench.ResultsServer.start_link(:sub_server, "")
 

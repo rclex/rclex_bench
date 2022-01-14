@@ -39,8 +39,8 @@ while [ ${CUR_STR_LENGTH} -le ${MAX_STR_LENGTH} ]; do
   NUM_SUB=1
 
   FILEPATH="./results/p1s1/${VERSION}/${CUR_STR_LENGTH}"
-  FILE_PUB="${FILEPATH}/pub.txt"
-  FILE_SUB="${FILEPATH}/sub.txt"
+  FILE_PUB="${FILEPATH}/pub.csv"
+  FILE_SUB="${FILEPATH}/sub.csv"
   mkdir -p ${FILEPATH}
 
   CMD="mix run -e 'RclexBench.StringTopic.sub_main(\"${FILE_SUB}\", ${NUM_SUB})'"
@@ -68,8 +68,8 @@ while [ ${CUR_STR_LENGTH} -le ${MAX_STR_LENGTH} ]; do
   NUM_SUB=1
   while [ ${NUM_PUB} -le ${MAX_NUM_NODES} ]; do
   FILEPATH="./results/pNs1/${VERSION}/${CUR_STR_LENGTH}/${NUM_PUB}"
-  FILE_PUB="${FILEPATH}/pub.txt"
-  FILE_SUB="${FILEPATH}/sub.txt"
+  FILE_PUB="${FILEPATH}/pub.csv"
+  FILE_SUB="${FILEPATH}/sub.csv"
   mkdir -p ${FILEPATH}
   
   CMD="mix run -e 'RclexBench.StringTopic.sub_main(\"${FILE_SUB}\", ${NUM_SUB})'"

@@ -7,11 +7,13 @@ NUM_COMM=5
 SUB_PUB_INTERVAL=0.1
 
 # Maximum length of string a.k.a size of message.
-MAX_STR_LENGTH=8192
+#MAX_STR_LENGTH=8192
+MAX_STR_LENGTH=16
 # Initial value of length, that will be increased by a factor of two.
 INI_STR_LENGTH=16
 # Maximum number of nodes
-MAX_NUM_NODES=100
+#MAX_NUM_NODES=100
+MAX_NUM_NODES=20
 # Initial number of nodes, that will be increased by 20
 INI_NUM_NODES=20
 
@@ -41,6 +43,7 @@ while [ ${CUR_STR_LENGTH} -le ${MAX_STR_LENGTH} ]; do
   FILEPATH="./results/p1s1/${VERSION}/${CUR_STR_LENGTH}"
   FILE_PUB="${FILEPATH}/pub.csv"
   FILE_SUB="${FILEPATH}/sub.csv"
+  FILE_TIM="${FILEPATH}/time.csv"
   mkdir -p ${FILEPATH}
 
   CMD="mix run -e 'RclexBench.StringTopic.sub_main(\"${FILE_SUB}\", ${NUM_SUB})'"
@@ -55,6 +58,9 @@ while [ ${CUR_STR_LENGTH} -le ${MAX_STR_LENGTH} ]; do
   PID_PUB=$!
 
   wait $PID_SUB $PID_PUB
+
+  CMD="mix run -e 'RclexBench.Utils.aggregation_csv(\"${FILE_PUB}\", \"${FILE_SUB}\", \"${FILE_TIM}\")'"
+  eval ${CMD} ;
 
   CUR_STR_LENGTH=$((${CUR_STR_LENGTH} * 2))
 done
@@ -70,6 +76,7 @@ while [ ${CUR_STR_LENGTH} -le ${MAX_STR_LENGTH} ]; do
   FILEPATH="./results/pNs1/${VERSION}/${CUR_STR_LENGTH}/${NUM_PUB}"
   FILE_PUB="${FILEPATH}/pub.csv"
   FILE_SUB="${FILEPATH}/sub.csv"
+  FILE_TIM="${FILEPATH}/time.csv"
   mkdir -p ${FILEPATH}
   
   CMD="mix run -e 'RclexBench.StringTopic.sub_main(\"${FILE_SUB}\", ${NUM_SUB})'"
@@ -84,6 +91,9 @@ while [ ${CUR_STR_LENGTH} -le ${MAX_STR_LENGTH} ]; do
   PID_PUB=$!
 
   wait $PID_SUB $PID_PUB
+
+  CMD="mix run -e 'RclexBench.Utils.aggregation_csv(\"${FILE_PUB}\", \"${FILE_SUB}\", \"${FILE_TIM}\")'"
+  eval ${CMD} ;
 
   NUM_PUB=$((${NUM_PUB} + 20))
   done
@@ -101,6 +111,7 @@ while [ ${CUR_STR_LENGTH} -le ${MAX_STR_LENGTH} ]; do
   FILEPATH="./results/p1sN/${VERSION}/${CUR_STR_LENGTH}/${NUM_SUB}"
   FILE_PUB="${FILEPATH}/pub.csv"
   FILE_SUB="${FILEPATH}/sub.csv"
+  FILE_TIM="${FILEPATH}/time.csv"
   mkdir -p ${FILEPATH}
   
   CMD="mix run -e 'RclexBench.StringTopic.sub_main(\"${FILE_SUB}\", ${NUM_SUB})'"
@@ -115,6 +126,9 @@ while [ ${CUR_STR_LENGTH} -le ${MAX_STR_LENGTH} ]; do
   PID_PUB=$!
 
   wait $PID_SUB $PID_PUB
+
+  CMD="mix run -e 'RclexBench.Utils.aggregation_csv(\"${FILE_PUB}\", \"${FILE_SUB}\", \"${FILE_TIM}\")'"
+  eval ${CMD} ;
 
   NUM_SUB=$((${NUM_SUB} + 20))
   done

@@ -8,12 +8,12 @@ SUB_PUB_INTERVAL=0.1
 
 # Maximum length of string a.k.a size of message.
 #MAX_STR_LENGTH=8192
-MAX_STR_LENGTH=16
+MAX_STR_LENGTH=32
 # Initial value of length, that will be increased by a factor of two.
 INI_STR_LENGTH=16
 # Maximum number of nodes
 #MAX_NUM_NODES=100
-MAX_NUM_NODES=20
+MAX_NUM_NODES=40
 # Initial number of nodes, that will be increased by 20
 INI_NUM_NODES=20
 

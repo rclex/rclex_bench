@@ -29,7 +29,9 @@
   - `pub.csv`, `sub.csv`: 
     - Raw data for each measurement per line
     - Format: `"{published,subscribed}_message","time"`
-
+  - `time.csv`: 
+    - Interval from sub_time to pub_time for the same message
+    - Format: `"message"{,"diff_time"}*`
 
 ## Configuration point
 

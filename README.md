@@ -18,12 +18,20 @@
 
 ## Results
 
-- `./results/p1s1/<version_name>`: pub1-sub1 communication
-  - `(cont.)/<length>`: The length of string, a.k.a the size of message
-- `./results/p1sN/<version_name>`: pub1-subN communication
-  - `(cont.)/<length>/<node>`: The number of nodes
-- `./results/pNs1/<version_name>`: pubN-sub1 communication
-  - `(cont.)/<length>/<node>`: The number of nodes
+- Directory structure
+  - `./results/p1s1/<version_name>`: pub1-sub1 communication
+    - `(cont.)/<length>`: The length of string, a.k.a the size of message
+  - `./results/p1sN/<version_name>`: pub1-subN communication
+    - `(cont.)/<length>/<node>`: The number of nodes
+  - `./results/pNs1/<version_name>`: pubN-sub1 communication
+    - `(cont.)/<length>/<node>`: The number of nodes
+- Files
+  - `pub.csv`, `sub.csv`: 
+    - Raw data for each measurement per line
+    - Format:
+      - First line: `"filepath":"start_time"`
+      - Subsequent: `"pub/sub_message","time"`
+
 
 ## Configuration point
 

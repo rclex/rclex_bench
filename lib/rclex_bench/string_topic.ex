@@ -73,7 +73,7 @@ defmodule RclexBench.StringTopic do
     # IO.puts("[#{time}] published msg: #{message}")
 
     # Store time to ResultsServer.
-    RclexBench.ResultsServer.store(:pub_server, time)
+    RclexBench.ResultsServer.store(:pub_server, {message, time})
   end
 
   @doc """
@@ -116,12 +116,11 @@ defmodule RclexBench.StringTopic do
   def sub_callback(msg) do
     # Measure system time just after subscribing.
     time = "#{System.system_time(:microsecond)}"
-    RclexBench.ResultsServer.store(:sub_server, time)
 
+    recv_msg = Rclex.readdata_string(msg)
     ## For debugging to subscribing message.
-    # received_msg = Rclex.readdata_string(msg)
-    # IO.puts("[#{time}] subscribed msg: #{received_msg}")
+    # IO.puts("[#{time}] subscribed msg: #{recv_msg}")
 
-    msg
+    RclexBench.ResultsServer.store(:sub_server, {recv_msg, time})
   end
 end

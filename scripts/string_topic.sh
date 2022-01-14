@@ -99,8 +99,8 @@ while [ ${CUR_STR_LENGTH} -le ${MAX_STR_LENGTH} ]; do
   NUM_SUB=${INI_NUM_NODES}
   while [ ${NUM_SUB} -le ${MAX_NUM_NODES} ]; do
   FILEPATH="./results/p1sN/${VERSION}/${CUR_STR_LENGTH}/${NUM_SUB}"
-  FILE_PUB="${FILEPATH}/pub.txt"
-  FILE_SUB="${FILEPATH}/sub.txt"
+  FILE_PUB="${FILEPATH}/pub.csv"
+  FILE_SUB="${FILEPATH}/sub.csv"
   mkdir -p ${FILEPATH}
   
   CMD="mix run -e 'RclexBench.StringTopic.sub_main(\"${FILE_SUB}\", ${NUM_SUB})'"

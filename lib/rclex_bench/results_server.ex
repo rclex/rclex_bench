@@ -9,10 +9,9 @@ defmodule RclexBench.ResultsServer do
     {:ok, results}
   end
 
-  def handle_cast({:store, {msg, time}}, results) do
-    result = "#{msg},#{time}\r\n"
-    # IO.inspect(result)
-    {:noreply, results <> result}
+  def handle_cast({:store, data}, results) do
+    # IO.inspect(data)
+    {:noreply, results <> data}
   end
 
   def handle_call({:write, filepath}, _from, results) do
@@ -21,8 +20,8 @@ defmodule RclexBench.ResultsServer do
     {:reply, nil, results}
   end
 
-  def store(name, {msg, time}) do
-    GenServer.cast(name, {:store, {msg, time}})
+  def store(name, data) do
+    GenServer.cast(name, {:store, data})
   end
 
   def write(name, filepath) do

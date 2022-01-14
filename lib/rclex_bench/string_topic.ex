@@ -80,7 +80,7 @@ defmodule RclexBench.StringTopic do
 
     # Store time to ResultsServer.
     Enum.map(0..(n - 1), fn index ->
-      RclexBench.ResultsServer.store(:pub_server, {Enum.at(messages, index), time})
+      RclexBench.ResultsServer.store(:pub_server, "#{Enum.at(messages, index)},#{time}\r\n")
     end)
   end
 
@@ -126,9 +126,8 @@ defmodule RclexBench.StringTopic do
     time = "#{System.system_time(:microsecond)}"
 
     recv_msg = Rclex.readdata_string(msg)
+    RclexBench.ResultsServer.store(:sub_server, "#{recv_msg},#{time}\r\n")
     ## For debugging to subscribing message.
     # IO.puts("[#{time}] subscribed msg: #{recv_msg}")
-
-    RclexBench.ResultsServer.store(:sub_server, {recv_msg, time})
   end
 end

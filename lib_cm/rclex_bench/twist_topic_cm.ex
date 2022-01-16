@@ -1,4 +1,4 @@
-defmodule RclexBench.StringTopic do
+defmodule RclexBench.TwistTopicCm do
   @moduledoc """
     The benchmark for String type.
   """
@@ -11,7 +11,7 @@ defmodule RclexBench.StringTopic do
   @doc """
     The benchmark which makes any number of publishers.
   """
-  def pub_main(filepath, num_node, str_length, num_comm) do
+  def pub_main(filepath, num_node, num_comm) do
     Logger.configure(level: @logger_level)
 
     # Generate file for measurement logs.
@@ -22,13 +22,13 @@ defmodule RclexBench.StringTopic do
     # Create nodes and register them as publishers.
     context = Rclex.rclexinit()
     {:ok, nodes} = Rclex.Executor.create_nodes(context, 'pub_node', num_node)
-    {:ok, publishers} = Rclex.Node.create_publishers(nodes, 'testtopic', :single)
+    {:ok, publishers} = Rclex.Node.create_publishers(nodes, 'GeometryMsgs.Msg.Twist', 'testtopic', :single)
 
     # Create and start Rclex Timer for publication.
     {:ok, timer} =
       Rclex.Executor.create_timer(
         &pub_callback/1,
-        {publishers, str_length},
+        publishers,
         @eval_interval,
         num_comm
       )
@@ -51,25 +51,37 @@ defmodule RclexBench.StringTopic do
   @doc """
     Timer event callback function for publication.
   """
-  def pub_callback(args) do
-    {publishers, length} = args
+  def pub_callback(publishers) do
     n = length(publishers)
 
-    # Prepare messages according to the number of publishers.
-    messages =
+    # Generate message values according to the number of publishers.
+    values =
       Enum.map(0..(n - 1), fn _ ->
-        RclexBench.Utils.random_string(length)
+        Enum.map(0..5, fn _ ->
+          :rand.uniform_real * 2.0
+        end)
       end)
 
-    # Convert messages to ROS format
-    msg_list = Rclex.initialize_msgs(n, :string)
+    # Measuring system time before preparing message.
+    time = "#{System.system_time(:microsecond)}"
+
+    # Prepare messages.
+    messages =
+      Enum.map(values, fn [linear_x, linear_y, linear_z, angular_x, angular_y, angular_z] ->
+        %Rclex.GeometryMsgs.Msg.Twist{
+          linear: %Rclex.GeometryMsgs.Msg.Vector3{x: linear_x, y: linear_y, z: linear_z},
+          angular: %Rclex.GeometryMsgs.Msg.Vector3{x: angular_x, y: angular_y, z: angular_z}
+        }
+      end)
+
+    # Convert messages to ROS format.
+    msg_list = Rclex.Msg.initialize_msgs(n, 'GeometryMsgs.Msg.Twist')
 
     Enum.map(0..(n - 1), fn index ->
-      Rclex.setdata(Enum.at(msg_list, index), Enum.at(messages, index), :string)
+      Rclex.Msg.set(Enum.at(msg_list, index), Enum.at(messages, index), 'GeometryMsgs.Msg.Twist')
     end)
 
-    # Publish topics after measuring system time.
-    time = "#{System.system_time(:microsecond)}"
+    # Publish topics.
     Rclex.Publisher.publish(publishers, msg_list)
 
     ## For debugging to publishing message.
@@ -77,7 +89,7 @@ defmodule RclexBench.StringTopic do
 
     # Store time to ResultsServer.
     Enum.map(0..(n - 1), fn index ->
-      RclexBench.ResultsServer.store(:pub_server, "#{Enum.at(messages, index)},#{time}\r\n")
+      RclexBench.ResultsServer.store(:pub_server, "#{inspect(Enum.at(messages, index))}@#{time}\r\n")
     end)
   end
 
@@ -95,7 +107,7 @@ defmodule RclexBench.StringTopic do
     # Create nodes and register them as subscribers.
     context = Rclex.rclexinit()
     {:ok, nodes} = Rclex.Executor.create_nodes(context, 'sub_node', num_node)
-    {:ok, subscribers} = Rclex.Node.create_subscribers(nodes, 'testtopic', :single)
+    {:ok, subscribers} = Rclex.Node.create_subscribers(nodes, 'GeometryMsgs.Msg.Twist', 'testtopic', :single)
 
     # Register callback and start subscription.
     Rclex.Subscriber.start_subscribing(subscribers, context, &sub_callback/1)
@@ -119,11 +131,13 @@ defmodule RclexBench.StringTopic do
     Callback function for subscribers.
   """
   def sub_callback(msg) do
-    # Measure system time just after subscribing.
+    # Read received message.
+    recv_msg = Rclex.Msg.read(msg, 'GeometryMsgs.Msg.Twist')
+
+    # Measure system time after reading message.
     time = "#{System.system_time(:microsecond)}"
 
-    recv_msg = Rclex.readdata_string(msg)
-    RclexBench.ResultsServer.store(:sub_server, "#{recv_msg},#{time}\r\n")
+    RclexBench.ResultsServer.store(:sub_server, "#{inspect(recv_msg)}@#{time}\r\n")
     ## For debugging to subscribing message.
     # IO.puts("[#{time}] subscribed msg: #{recv_msg}")
   end

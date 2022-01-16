@@ -19,7 +19,7 @@ defmodule RclexBench.Utils do
 
       for [sub_msg, sub_time] <- sub_rows do
         if pub_msg == sub_msg do
-          RclexBench.ResultsServer.store(:agg_server, ",#{sub_time - pub_time}")
+          RclexBench.ResultsServer.store(:agg_server, "@#{sub_time - pub_time}")
         end
       end
 
@@ -34,7 +34,7 @@ defmodule RclexBench.Utils do
       file
       |> File.stream!()
       |> Stream.map(&String.trim(&1))
-      |> Stream.map(&String.split(&1, ","))
+      |> Stream.map(&String.split(&1, "@"))
       |> Enum.to_list()
 
     Enum.map(rows, fn [msg, time_string] ->

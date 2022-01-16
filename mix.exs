@@ -6,8 +6,9 @@ defmodule RclexBench.MixProject do
       app: :rclex_bench,
       version: "0.1.0",
       elixir: "~> 1.12",
+      elixirc_paths: elixirc_paths(Mix.target()),
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(Mix.target())
     ]
   end
 
@@ -19,10 +20,17 @@ defmodule RclexBench.MixProject do
   end
 
   # Run "mix help deps" to learn about dependencies.
-  defp deps do
+  defp deps(:rclex051) do
     [
-      # {:rclex, "~> 0.5.1"}
+      {:rclex, path: "../rclex_051/rclex"}
+    ]
+  end
+  defp deps(:rclexcm) do
+    [
       {:rclex, path: "../rclex"}
     ]
   end
+
+  defp elixirc_paths(:rclex051), do: ["lib", "lib_051"]
+  defp elixirc_paths(:rclexcm), do: ["lib", "lib_cm"]
 end

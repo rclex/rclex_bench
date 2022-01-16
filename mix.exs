@@ -21,8 +21,8 @@ defmodule RclexBench.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      # {:rclex, "~> 0.5.1"}
-      {:rclex, path: "../rclex"}
+      {:rclex, "~> 0.4.1"}
+      #{:rclex, path: "../rclex"}
     ]
   end
 end

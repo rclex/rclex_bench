@@ -30,7 +30,7 @@ else
 fi
 
 # Re-compile benchmark.
-rm -rf _build/ deps
+# rm -rf _build/ deps
 MIX_TARGET=${TARGET} mix deps.get
 MIX_TARGET=${TARGET} mix compile
 if [ $? -ne 0 ]; then

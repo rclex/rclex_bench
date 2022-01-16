@@ -21,15 +21,15 @@ defmodule RclexBench.StringTopic do
 
     # Create nodes and register them as publishers.
     context = Rclex.rclexinit()
-    {:ok, nodes} = Rclex.Executor.create_nodes(context, 'pub_node', num_node)
-    {:ok, publishers} = Rclex.Node.create_publishers(nodes, 'testtopic', :single)
+    nodes = Rclex.create_nodes(context, 'pub_node', num_node)
+    publishers = Rclex.create_publishers(nodes, 'testtopic', :single)
 
     # Create and start Rclex Timer for publication.
-    {:ok, timer} =
-      Rclex.Executor.create_timer(
-        &pub_callback/1,
+    {_pub_sv, _pub_child} =
+      Rclex.Timer.timer_start(
         {publishers, str_length},
         @eval_interval,
+        &pub_callback/1,
         num_comm
       )
 
@@ -37,9 +37,8 @@ defmodule RclexBench.StringTopic do
     Process.sleep(@eval_pub_period)
 
     # Finalize Rclex environments.
-    Rclex.Executor.stop_timer(timer)
-    Rclex.Node.finish_jobs(publishers)
-    Rclex.Executor.finish_nodes(nodes)
+    Rclex.publisher_finish(publishers, nodes)
+    Rclex.node_finish(nodes)
     Rclex.shutdown(context)
 
     # Write results to the file.
@@ -94,19 +93,19 @@ defmodule RclexBench.StringTopic do
 
     # Create nodes and register them as subscribers.
     context = Rclex.rclexinit()
-    {:ok, nodes} = Rclex.Executor.create_nodes(context, 'sub_node', num_node)
-    {:ok, subscribers} = Rclex.Node.create_subscribers(nodes, 'testtopic', :single)
+    nodes = Rclex.create_nodes(context, 'sub_node', num_node)
+    subscribers = Rclex.create_subscribers(nodes, 'testtopic', :single)
 
     # Register callback and start subscription.
-    Rclex.Subscriber.start_subscribing(subscribers, context, &sub_callback/1)
+    {sv, child} = Rclex.Subscriber.subscribe_start(subscribers, context, &sub_callback/1)
 
     # Wait a while to finish publication.
     Process.sleep(@eval_sub_period)
 
     # Finalize Rclex environments.
-    Rclex.Subscriber.stop_subscribing(subscribers)
-    Rclex.Node.finish_jobs(subscribers)
-    Rclex.Executor.finish_nodes(nodes)
+    Rclex.Timer.terminate_timer(sv, child)
+    Rclex.subscriber_finish(subscribers, nodes)
+    Rclex.node_finish(nodes)
     Rclex.shutdown(context)
 
     # Write results to the file.

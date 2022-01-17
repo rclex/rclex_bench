@@ -29,8 +29,7 @@ defmodule RclexBench.StringTopic do
       Rclex.Executor.create_timer(
         &pub_callback/1,
         {publishers, str_length},
-        @eval_interval,
-        num_comm
+        @eval_interval
       )
 
     # Wait a while to finish publication.

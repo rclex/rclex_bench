@@ -84,7 +84,7 @@ defmodule RclexBench.ParseResult do
             File.write("results/#{type_name}/#{multi_node}/cpu_#{char_length}.csv", "#{node_num},", [:append])
             File.write("results/#{type_name}/#{multi_node}/memory_#{char_length}.csv", "#{node_num},", [:append])
             ["0.4.1","0.5.1","latest"]
-            |> Enum.map(fn version -> 
+            |> Enum.map(fn version ->
                 {:ok, txt} = File.read("results/#{type_name}/#{multi_node}/#{version}_cpu/#{char_length}/#{node_num}/parsed_cpu_usage_#{char_length}_strings.log")
                 #calc cpu usage
                 cpu_txt = Regex.run(~r/Average: +all +.+/, txt)
@@ -105,6 +105,38 @@ defmodule RclexBench.ParseResult do
             end)
             File.write("results/#{type_name}/#{multi_node}/cpu_#{char_length}.csv", "\n", [:append])
             File.write("results/#{type_name}/#{multi_node}/memory_#{char_length}.csv", "\n", [:append])
-        end)        
+        end)
+    end
+
+    def parse_usage_p1s1(type_name, char_length) do
+        File.write("results/#{type_name}/p1s1/memory_#{char_length}.csv", ",0.4.1,0.5.1,latest,\n")
+        File.write("results/#{type_name}/p1s1/cpu_#{char_length}.csv", ",0.4.1,0.5.1,latest,\n")
+        [20,40,60,80,100]
+        |> Enum.map(fn node_num ->
+            File.write("results/#{type_name}/p1s1/cpu_#{char_length}.csv", "#{node_num},", [:append])
+            File.write("results/#{type_name}/p1s1/memory_#{char_length}.csv", "#{node_num},", [:append])
+            ["0.4.1","0.5.1","latest"]
+            |> Enum.map(fn version ->
+                {:ok, txt} = File.read("results/#{type_name}/p1s1/#{version}_cpu/#{char_length}/parsed_cpu_usage_#{char_length}_strings.log")
+                #calc cpu usage
+                cpu_txt = Regex.run(~r/Average: +all +.+/, txt)
+                cpu_array = ~w/#{cpu_txt}/
+                #IO.inspect(Enum.at(cpu_array,7))
+                idle = String.to_float(Enum.at(cpu_array,7))
+                diff = 100.0 -  idle
+                File.write("results/#{type_name}/p1s1/cpu_#{char_length}.csv", "#{diff},", [:append])
+                # calc memory usage
+                {:ok, txt2} = File.read("results/#{type_name}/p1s1/#{version}_cpu/#{char_length}/parsed_memory_usage_#{char_length}_strings.log")
+                memory_txt = Regex.run(~r/Average: +[0-9]+ +.+/, txt2)
+                memory_array = ~w/#{memory_txt}/
+                {:ok, before_txt} = File.read("results/#{type_name}/p1s1/#{version}_cpu/#{char_length}/parsed_before_memory_usage_#{char_length}_strings.log")
+                before_memory_txt = Regex.run(~r/Average: +[0-9]+ +.+/, before_txt)
+                before_memory_array = ~w/#{before_memory_txt}/
+                used_memory = String.to_integer(Enum.at(memory_array,3)) - String.to_integer(Enum.at(before_memory_array,3)) #- (String.to_integer(Enum.at(memory_array,5)) + String.to_integer(Enum.at(memory_array,6)))
+                File.write("results/#{type_name}/p1s1/memory_#{char_length}.csv", "#{used_memory},", [:append])
+            end)
+            File.write("results/#{type_name}/p1s1/cpu_#{char_length}.csv", "\n", [:append])
+            File.write("results/#{type_name}/p1s1/memory_#{char_length}.csv", "\n", [:append])
+        end)
     end
 end

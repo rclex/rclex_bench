@@ -30,6 +30,7 @@ defmodule RclexBench.StringTopic do
         &pub_callback/1,
         publishers,
         @eval_interval,
+        "test_timer",
         num_comm
       )
 

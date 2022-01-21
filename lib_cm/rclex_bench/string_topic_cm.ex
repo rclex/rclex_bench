@@ -21,12 +21,12 @@ defmodule RclexBench.StringTopicCm do
 
     # Create nodes and register them as publishers.
     context = Rclex.rclexinit()
-    {:ok, nodes} = Rclex.Executor.create_nodes(context, 'pub_node', num_node)
+    {:ok, nodes} = Rclex.ResourceServer.create_nodes(context, 'pub_node', num_node)
     {:ok, publishers} = Rclex.Node.create_publishers(nodes, 'StdMsgs.Msg.String', 'testtopic', :single)
 
     # Create and start Rclex Timer for publication.
     {:ok, timer} =
-      Rclex.Executor.create_timer(
+      Rclex.ResourceServer.create_timer(
         &pub_callback/1,
         publishers,
         @eval_interval,
@@ -37,9 +37,9 @@ defmodule RclexBench.StringTopicCm do
     Process.sleep(@eval_pub_period)
 
     # Finalize Rclex environments.
-    Rclex.Executor.stop_timer(timer)
+    Rclex.ResourceServer.stop_timer(timer)
     Rclex.Node.finish_jobs(publishers)
-    Rclex.Executor.finish_nodes(nodes)
+    Rclex.ResourceServer.finish_nodes(nodes)
     Rclex.shutdown(context)
 
     # Write results to the file.
@@ -103,7 +103,7 @@ defmodule RclexBench.StringTopicCm do
 
     # Create nodes and register them as subscribers.
     context = Rclex.rclexinit()
-    {:ok, nodes} = Rclex.Executor.create_nodes(context, 'sub_node', num_node)
+    {:ok, nodes} = Rclex.ResourceServer.create_nodes(context, 'sub_node', num_node)
     {:ok, subscribers} = Rclex.Node.create_subscribers(nodes, 'StdMsgs.Msg.String', 'testtopic', :single)
 
     # Register callback and start subscription.
@@ -115,7 +115,7 @@ defmodule RclexBench.StringTopicCm do
     # Finalize Rclex environments.
     Rclex.Subscriber.stop_subscribing(subscribers)
     Rclex.Node.finish_jobs(subscribers)
-    Rclex.Executor.finish_nodes(nodes)
+    Rclex.ResourceServer.finish_nodes(nodes)
     Rclex.shutdown(context)
 
     # Write results to the file.
@@ -133,7 +133,7 @@ defmodule RclexBench.StringTopicCm do
     [linear_x, linear_y, linear_z, angular_x, angular_y, angular_z] =
       List.to_string(recv_msg.data)
       |> String.split(",")
-      |> Enum.map(fn str_value -> 
+      |> Enum.map(fn str_value ->
            Float.parse(str_value)
          end)
 

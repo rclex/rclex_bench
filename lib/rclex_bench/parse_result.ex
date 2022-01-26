@@ -13,7 +13,7 @@ defmodule RclexBench.ParseResult do
     def parse_time(type_name, multi_node) do
         char_lengths = [32,64,128,256]
         node_nums = [20,40,60,80,100]
-        versions = ["0.4.1", "latest"]
+        versions = ["0.4.1", "0.5.2"]
         output_file_path = "results/#{type_name}/#{multi_node}/time_#{multi_node}.csv"
         File.write(output_file_path, ",")
         Enum.map(versions, fn version ->
@@ -59,7 +59,7 @@ defmodule RclexBench.ParseResult do
     def parse_time_p1s1(type_name) do
         node_num = 1
         char_lengths = [32, 64, 128, 256]
-        versions = ["0.4.1", "latest"]
+        versions = ["0.4.1", "0.5.2"]
         output_file_path = "results/#{type_name}/p1s1/time_node_#{node_num}.csv"
         File.write(output_file_path, ",")
         Enum.map(versions, fn version -> File.write(output_file_path, "#{version},", [:append]) end)
@@ -96,9 +96,9 @@ defmodule RclexBench.ParseResult do
     end
 
     def parse_usage(type_name, multi_node) do
-        char_lengths = [32,64,128,256]
+        char_lengths = [128,256]
         node_nums = [20,40,60,80,100]
-        versions = ["0.4.1", "latest"]
+        versions = ["0.4.1", "0.5.2"]
         output_memory_file_path = "results/#{type_name}/#{multi_node}/memory_#{multi_node}.csv"
         output_cpu_file_path = "results/#{type_name}/#{multi_node}/cpu_#{multi_node}.csv"
         File.write(output_memory_file_path, ",")
@@ -157,13 +157,13 @@ defmodule RclexBench.ParseResult do
     end
 
     # def parse_usage_p1s1(type_name, char_length) do
-    #     File.write("results/#{type_name}/p1s1/memory_#{char_length}.csv", ",0.4.1,0.5.1,latest,\n")
-    #     File.write("results/#{type_name}/p1s1/cpu_#{char_length}.csv", ",0.4.1,0.5.1,latest,\n")
+    #     File.write("results/#{type_name}/p1s1/memory_#{char_length}.csv", ",0.4.1,0.5.1,0.5.2,\n")
+    #     File.write("results/#{type_name}/p1s1/cpu_#{char_length}.csv", ",0.4.1,0.5.1,0.5.2,\n")
     #     [20,40,60,80,100]
     #     |> Enum.map(fn node_num ->
     #         File.write("results/#{type_name}/p1s1/cpu_#{char_length}.csv", "#{node_num},", [:append])
     #         File.write("results/#{type_name}/p1s1/memory_#{char_length}.csv", "#{node_num},", [:append])
-    #         ["0.4.1","0.5.1","latest"]
+    #         ["0.4.1","0.5.1","0.5.2"]
     #         |> Enum.map(fn version ->
     #             {:ok, txt} = File.read("results/#{type_name}/p1s1/#{version}_cpu/#{char_length}/parsed_cpu_usage_#{char_length}_strings.log")
     #             #calc cpu usage

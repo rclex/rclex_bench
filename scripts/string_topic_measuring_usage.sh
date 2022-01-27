@@ -5,7 +5,8 @@
 NUM_COMM=5
 # Time to sleep after running sub_main before running pub_main.
 SUB_PUB_INTERVAL=0.1
-
+# Time to sleep after runnning sub_main and pub_main
+SAR_INTERVAL=3
 # Maximum length of string a.k.a size of message.
 #MAX_STR_LENGTH=8192
 MAX_STR_LENGTH=256
@@ -57,6 +58,9 @@ while [ ${CUR_STR_LENGTH} -le ${MAX_STR_LENGTH} ]; do
   eval ${CMD} &
   PID_PUB=$!
 
+  # Wait a while.
+  sleep ${RCLEX_INTERVAL}
+
   sar -ur -o ${FILEPATH}/usage_${CUR_STR_LENGTH}_strings.log 1 30
 
   wait $PID_SUB $PID_PUB
@@ -89,6 +93,8 @@ while [ ${CUR_STR_LENGTH} -le ${MAX_STR_LENGTH} ]; do
   eval ${CMD} &
   PID_PUB=$!
 
+  # Wait a while.
+  sleep ${RCLEX_INTERVAL}
   sar -ur -o ${FILEPATH}/usage_${CUR_STR_LENGTH}_strings.log 1 30
 
   wait $PID_SUB $PID_PUB
@@ -123,6 +129,8 @@ while [ ${CUR_STR_LENGTH} -le ${MAX_STR_LENGTH} ]; do
   eval ${CMD} &
   PID_PUB=$!
 
+  # Wait a while.
+  sleep ${RCLEX_INTERVAL}
   sar -ur -o ${FILEPATH}/usage_${CUR_STR_LENGTH}_strings.log 1 30
 
   wait $PID_SUB $PID_PUB

@@ -20,7 +20,7 @@ defmodule RclexBench.StringTopicForMeasuringUsage do
     publishers = Rclex.create_publishers(nodes, 'testtopic', :single)
 
     # Create and start Rclex Timer for publication.
-    {_pub_sv, _pub_child} =
+    {pub_sv, pub_child} =
       Rclex.Timer.timer_start(
         {publishers, str_length},
         @eval_interval,
@@ -31,6 +31,7 @@ defmodule RclexBench.StringTopicForMeasuringUsage do
     Process.sleep(@eval_pub_period)
 
     # Finalize Rclex environments.
+    Rclex.Timer.terminate_timer(pub_sv, pub_child)
     Rclex.publisher_finish(publishers, nodes)
     Rclex.node_finish(nodes)
     Rclex.shutdown(context)

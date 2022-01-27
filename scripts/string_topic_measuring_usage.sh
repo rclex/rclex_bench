@@ -59,7 +59,7 @@ while [ ${CUR_STR_LENGTH} -le ${MAX_STR_LENGTH} ]; do
   PID_PUB=$!
 
   # Wait a while.
-  sleep ${RCLEX_INTERVAL}
+  sleep ${SAR_INTERVAL}
 
   sar -ur -o ${FILEPATH}/usage_${CUR_STR_LENGTH}_strings.log 1 30
 
@@ -94,7 +94,7 @@ while [ ${CUR_STR_LENGTH} -le ${MAX_STR_LENGTH} ]; do
   PID_PUB=$!
 
   # Wait a while.
-  sleep ${RCLEX_INTERVAL}
+  sleep ${SAR_INTERVAL}
   sar -ur -o ${FILEPATH}/usage_${CUR_STR_LENGTH}_strings.log 1 30
 
   wait $PID_SUB $PID_PUB
@@ -130,7 +130,7 @@ while [ ${CUR_STR_LENGTH} -le ${MAX_STR_LENGTH} ]; do
   PID_PUB=$!
 
   # Wait a while.
-  sleep ${RCLEX_INTERVAL}
+  sleep ${SAR_INTERVAL}
   sar -ur -o ${FILEPATH}/usage_${CUR_STR_LENGTH}_strings.log 1 30
 
   wait $PID_SUB $PID_PUB
